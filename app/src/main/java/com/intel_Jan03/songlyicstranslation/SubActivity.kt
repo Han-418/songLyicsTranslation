@@ -1,97 +1,18 @@
 package com.intel_Jan03.songlyicstranslation
 
-import android.app.Application
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.intel_Jan03.songlyicstranslation.ui.theme.SongLyicsTranslationTheme
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            SongLyicsTranslationTheme {
-                MainScreen()
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
 @Composable
-fun MainScreenPreview() {
-    MainScreen()
-}
-
-@Composable
-fun MainScreen() {
+fun insertLyics() {
     val context = LocalContext.current
     val db = Mydb.getDatabase(context)
     val scope = rememberCoroutineScope()
-    LaunchedEffect(Unit) {
-        scope.launch(Dispatchers.IO) {
-//        db.musicDao().insertMusic(newMusic)
-        }
-    }
-
-    var song by remember { mutableStateOf<String>("") }
-    var singer by remember { mutableStateOf<String>("") }
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        TextField(
-            value = song,
-            onValueChange = { song = it },
-            label = { Text("노래 제목 입력") }
-        )
-        TextField(
-            value = singer,
-            onValueChange = { singer = it },
-            label = { Text("가수 이름 입력") }
-        )
-        Button(onClick = {
-            var lyicsTrans = db.musicDao().loadLyics()
-
-
-        }) {
-            Text("검색")
-        }
-    }
-}
-
-    val newMusic = Music(
+    val newMusic1 = Music(
         song = "See You Again", singer = "Charlie Puth",
         lyics = "It's been a long day without you, my friend\n" +
                 "And I'll tell you all about it when I see you again\n" +
@@ -145,3 +66,16 @@ fun MainScreen() {
                 "Ooh (uh-huh, yup)\n" +
                 "When I see you again",
     )
+
+    val newMusic2 = Music(
+        song = "", singer = "",
+        lyics = ""
+
+    )
+
+    LaunchedEffect(Unit) {
+        scope.launch(Dispatchers.IO) {
+            db.musicDao().insertMusic(newMusic1)
+        }
+    }
+}
