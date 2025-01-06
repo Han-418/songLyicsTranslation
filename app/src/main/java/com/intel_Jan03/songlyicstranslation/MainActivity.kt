@@ -27,6 +27,7 @@ import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.intel_Jan03.songlyicstranslation.ui.theme.SongLyicsTranslationTheme
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -37,8 +38,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SongLyicsTranslationTheme {
-                val viewModel: MusicViewModel = viewModel()
-                MainScreen(viewModel)
+                MainScreen()
+                MusicViewModel(
+                    application = TODO()
+                )
             }
         }
     }
@@ -82,7 +85,7 @@ class MusicViewModel(application: Application) : ViewModel() {
     // 데이터 삽입 메서드
     fun insertMusic() {
         val newMusic = Music(
-            song = "See You Again", singer = "30",
+            song = "See You Again", singer = "Charlie Puth",
             lyics = "It's been a long day without you, my friend\n" +
                     "And I'll tell you all about it when I see you again\n" +
                     "We've come a long way from where we began\n" +
@@ -134,10 +137,9 @@ class MusicViewModel(application: Application) : ViewModel() {
                     "Oh (yeah), oh (yeah, yeah, oh-oh)\n" +
                     "Ooh (uh-huh, yup)\n" +
                     "When I see you again",
-            uid = TODO()
         )
         // ViewModel에서 코루틴을 사용하여 데이터를 삽입
-        GlobalScope.launch {
+        viewModelScope.launch {
             musicDao.insert(newMusic)
         }
     }
