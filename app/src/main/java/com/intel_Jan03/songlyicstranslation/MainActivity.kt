@@ -21,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.intel_Jan03.songlyicstranslation.ui.theme.SongLyicsTranslationTheme
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -56,8 +58,11 @@ fun MainScreen() {
 //    val musicViewModel = <MusicViewModel>()
     val context = LocalContext.current
     val db = Mydb.getDatabase(context)
+    val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
-        db.musicDao().insertMusic()
+        scope.launch(Dispatchers.IO) {
+            db.musicDao().insertMusic()
+        }
     }
     var song by remember { mutableStateOf<String>("") }
     var singer by remember { mutableStateOf<String>("") }
@@ -76,12 +81,16 @@ fun MainScreen() {
             onValueChange = { singer = it },
             label = { Text("가수 이름 입력") }
         )
-        Button(onClick = {}) {
+        Button(onClick = {
+            var lyicsTrans = db.musicDao().getMusic()
+
+        }) {
             Text("검색")
         }
     }
 }
 
+@Composable
 fun insertMusic() {
     val newMusic = Music(
         song = "See You Again", singer = "Charlie Puth",
