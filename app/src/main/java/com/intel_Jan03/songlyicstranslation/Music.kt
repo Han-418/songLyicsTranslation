@@ -8,5 +8,6 @@ import androidx.room.PrimaryKey
 data class Music(
     @PrimaryKey(autoGenerate = true) val uid: Int,
     @ColumnInfo(name = "song") val song: String?,
-    @ColumnInfo(name = "singer") val singer: String?
+    @ColumnInfo(name = "singer") val singer: String?,
+    @ColumnInfo(name = "lyics") val lyics: String?
 )
