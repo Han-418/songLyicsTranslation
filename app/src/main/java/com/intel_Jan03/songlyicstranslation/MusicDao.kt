@@ -8,11 +8,11 @@ import androidx.room.Query
 @Dao
 interface MusicDao {
     @Query("SELECT * FROM music")
-    fun getAll(): List<Music>
+    fun getMusic(): List<Music>
 
     @Insert
-    fun insert(vararg music: Music)
+    fun insertMusic(vararg music: Music)
 
     @Delete
-    fun delete(music: Music)
+    fun deleteMusic(music: Music)
 }
