@@ -1,17 +1,14 @@
 package com.intel_Jan03.songlyicstranslation
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun insertLyics() {
-    val context = LocalContext.current
-    val db = Mydb.getDatabase(context)
-    val scope = rememberCoroutineScope()
+fun newMusic(): Music {
     val newMusic1 = Music(
         song = "See You Again", singer = "Charlie Puth",
         lyics = "It's been a long day without you, my friend\n" +
@@ -73,9 +70,13 @@ fun insertLyics() {
 
     )
 
-    LaunchedEffect(Unit) {
-        scope.launch(Dispatchers.IO) {
-            db.musicDao().insertMusic(newMusic1)
-        }
+    return newMusic1
+}
+
+
+fun transToast(scope: CoroutineScope, context: Context, transText: String) {
+    scope.launch(Dispatchers.Main){
+        Toast.makeText(context, transText, Toast.LENGTH_SHORT).show()
     }
 }
+

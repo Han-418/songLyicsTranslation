@@ -1,5 +1,6 @@
 package com.intel_Jan03.songlyicstranslation
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -50,11 +51,11 @@ fun MainScreen() {
     val context = LocalContext.current
     val db = Mydb.getDatabase(context)
     val scope = rememberCoroutineScope()
-    LaunchedEffect(Unit) {
-        scope.launch(Dispatchers.IO) {
+//    LaunchedEffect(Unit) {
+//        scope.launch(Dispatchers.IO) {
 //        db.musicDao().insertMusic(newMusic)
-        }
-    }
+//        }
+//    }
 
     //translation
     var transText by remember { mutableStateOf("") }
@@ -82,7 +83,7 @@ fun MainScreen() {
     //
 
     var song by remember { mutableStateOf<String>("See You Again") }
-    var singer by remember { mutableStateOf<String>("Chalie Puth") }
+    var singer by remember { mutableStateOf<String>("Charlie Puth") }
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -104,7 +105,7 @@ fun MainScreen() {
                 scope.launch(Dispatchers.IO) {
                     //음악 정보 조회
                     val musics = db.musicDao().getMusic()
-                    val music = musics.find { it.singer == singer && it.song == song }
+                    val music = musics.find { it.song == song && it.singer == singer }
 
                     if (music != null) {
                         lyicsTrans = music.lyics ?: "No lyrics available"
@@ -113,16 +114,27 @@ fun MainScreen() {
                             .addOnSuccessListener { translatedText ->
                                 // Translation successful.
                                 transText = translatedText
-                                Toast.makeText(context, transText, Toast.LENGTH_SHORT).show()
+//                                scope.launch(Dispatchers.Main){
+//                                    Toast.makeText(context, transText, Toast.LENGTH_SHORT).show()
+//                                }
+                                val intent = Intent(context, LyicsVeiwerActivity::class.java)
+                                context.startActivity(intent)
                             }
                             .addOnFailureListener { exception ->
                                 // Error.
-                                transText = "translation False"
+                                transText = "translation False:("
+//                                scope.launch(Dispatchers.Main){
+//                                    Toast.makeText(context, transText, Toast.LENGTH_SHORT).show()
+//                                }
+                                transToast(scope, context, transText)
                             }
                     } else {
                         // 음악을 찾지 못한 경우
                         transText = "No matching song found!"
-                        Toast.makeText(context, transText, Toast.LENGTH_SHORT).show()
+//                        scope.launch(Dispatchers.Main) {
+//                            Toast.makeText(context, transText, Toast.LENGTH_SHORT).show()
+//                        }
+                        transToast(scope, context, transText)
                     }
                 }
             },
