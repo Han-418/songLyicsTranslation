@@ -45,12 +45,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun MainScreenPreview() {
-    MainScreen()
-}
-
 @Composable
 fun MainScreen() {
     val context = LocalContext.current
@@ -108,21 +102,32 @@ fun MainScreen() {
             onClick = {
                 var lyicsTrans = ""
                 scope.launch(Dispatchers.IO) {
-                    transText = db.musicDao().getMusic().toString()
-                    enKoTranslator.translate(lyicsTrans)
-                        .addOnSuccessListener { translatedText ->
-                            // Translation successful.
-                            transText = translatedText
-                            Toast.makeText(context, transText, Toast.LENGTH_SHORT).show()
-                        }
-                        .addOnFailureListener { exception ->
-                            // Error.
-                            transText = "translation False"
-                        }
+                    //음악 정보 조회
+                    val musics = db.musicDao().getMusic()
+                    val music = musics.find { it.singer == singer && it.song == song }
+
+                    if (music != null) {
+                        lyicsTrans = music.lyics ?: "No lyrics available"
+
+                        enKoTranslator.translate(lyicsTrans)
+                            .addOnSuccessListener { translatedText ->
+                                // Translation successful.
+                                transText = translatedText
+                                Toast.makeText(context, transText, Toast.LENGTH_SHORT).show()
+                            }
+                            .addOnFailureListener { exception ->
+                                // Error.
+                                transText = "translation False"
+                            }
+                    } else {
+                        // 음악을 찾지 못한 경우
+                        transText = "No matching song found!"
+                        Toast.makeText(context, transText, Toast.LENGTH_SHORT).show()
+                    }
                 }
             },
             enabled = isReady,
-            ) {
+        ) {
             Text("검색")
         }
         Text(transText)

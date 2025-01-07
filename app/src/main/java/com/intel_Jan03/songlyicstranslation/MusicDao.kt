@@ -11,7 +11,7 @@ interface MusicDao {
     fun getMusic(): List<Music>
 
 //    @Query("SELECT lyics FROM music")
-//    fun loadLyics(): List< Music>
+//    fun loadLyics(): List<String?>
 
     @Insert
     fun insertMusic(vararg music: Music)
