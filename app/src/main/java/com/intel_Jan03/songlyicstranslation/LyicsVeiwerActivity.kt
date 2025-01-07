@@ -11,7 +11,7 @@ class LyicsVeiwerActivity : ComponentActivity() {
         super.onCreate(savedInstanceState) //super: 부모에 정의된 onCreate 실행
         setContent {
             SongLyicsTranslationTheme {
-
+                LyicsVeiwerScreen()
             }
         }
     }
