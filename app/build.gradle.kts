@@ -91,6 +91,12 @@ dependencies {
     // optional - Paging 3 Integration
     implementation("androidx.room:room-paging:$room_version")
 
+    //
     //ML-kit
     implementation("com.google.mlkit:translate:17.0.3")
+
+    //
+    //Retrofit, Gson
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 }

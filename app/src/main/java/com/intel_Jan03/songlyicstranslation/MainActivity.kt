@@ -57,31 +57,6 @@ fun MainScreen() {
 //        }
 //    }
 
-    //translation
-    var transText by remember { mutableStateOf("") }
-
-    val enKoTranslator = remember {
-        val options = TranslatorOptions.Builder()
-            .setSourceLanguage(TranslateLanguage.ENGLISH)
-            .setTargetLanguage(TranslateLanguage.KOREAN)
-            .build()
-
-        Translation.getClient(options)
-    }
-    var isReady by remember { mutableStateOf(false) }
-    LaunchedEffect(enKoTranslator) {
-        var conditions = DownloadConditions.Builder()
-            .build()
-        enKoTranslator.downloadModelIfNeeded(conditions)
-            .addOnSuccessListener {
-                isReady = true
-            }
-            .addOnFailureListener {
-                Toast.makeText(context, "transLator Download Failed!!", Toast.LENGTH_SHORT).show()
-            }
-    }
-    //
-
     var song by remember { mutableStateOf<String>("See You Again") }
     var singer by remember { mutableStateOf<String>("Charlie Puth") }
     Column(
@@ -112,37 +87,16 @@ fun MainScreen() {
 
                     if (music != null) {
                         lyicsTrans = music.lyics ?: "No lyrics available"
-
-                        enKoTranslator.translate(lyicsTrans)
-                            .addOnSuccessListener { translatedText ->
-                                // Translation successful.
-                                transText = translatedText
-//                                scope.launch(Dispatchers.Main){
-//                                    Toast.makeText(context, transText, Toast.LENGTH_SHORT).show()
-//                                }
-                                val moveTheScreen = Intent(context, LyicsVeiwerActivity::class.java)
-                                moveTheScreen.putExtra("TRANSLATED_TEXT", transText) // transText 변수를 이동할 페이지에 전달
-                                context.startActivity(moveTheScreen)
-                            }
-                            .addOnFailureListener { exception ->
-                                // Error.
-                                transText = "translation False:("
-//                                scope.launch(Dispatchers.Main){
-//                                    Toast.makeText(context, transText, Toast.LENGTH_SHORT).show()
-//                                }
-                                transToast(scope, context, transText)
-                            }
+                        // 화면 이동과 번역된 텍스트만 전달
+                        val moveTheScreen = Intent(context, LyicsVeiwerActivity::class.java)
+                        moveTheScreen.putExtra("LYRICS_TEXT", lyicsTrans) // 가사 텍스트 전달
+                        context.startActivity(moveTheScreen)
                     } else {
                         // 음악을 찾지 못한 경우
-                        transText = "No matching song found!"
-//                        scope.launch(Dispatchers.Main) {
-//                            Toast.makeText(context, transText, Toast.LENGTH_SHORT).show()
-//                        }
-                        transToast(scope, context, transText)
+                        Toast.makeText(context, "No matching song found!", Toast.LENGTH_SHORT).show()
                     }
                 }
             },
-            enabled = isReady,
         ) {
             Text("검색")
         }
