@@ -2,6 +2,7 @@ package com.intel_Jan03.songlyicstranslation
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -29,6 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.nl.translate.Translation
@@ -47,6 +50,8 @@ class LyicsVeiwerActivity : ComponentActivity() {
         }
     }
 }
+
+private const val REQUEST_CODE_AUDIO = 100
 
 @Composable
 private fun SpeechToTranslationScreen() {
@@ -160,8 +165,43 @@ private fun SpeechToTranslationScreen() {
         Text("인식된 텍스트: $recognizedText", modifier = Modifier.padding(8.dp))
         Text("번역된 텍스트: $translatedText", modifier = Modifier.padding(8.dp))
 
-        Button(onClick = { startListening() }, enabled = !isListening) {
-            Text("음성 인식 시작")
+        Button(
+            onClick = {
+                if (ContextCompat.checkSelfPermission(
+                        context,
+                        android.Manifest.permission.RECORD_AUDIO
+                    )
+                    != PackageManager.PERMISSION_GRANTED
+                ) {
+                    ActivityCompat.requestPermissions(
+                        context as Activity,
+                        arrayOf(android.Manifest.permission.RECORD_AUDIO),
+                        REQUEST_CODE_AUDIO
+                    )
+                } else {
+                    startListening()
+                }
+            },
+            enabled = !isListening
+        ) {
+            Text(if (isListening) "음성 인식 중..." else "음성 인식 시작")
         }
+
+        LaunchedEffect(recognizedText) {
+            if (recognizedText.isNotEmpty()) {
+                translatedText = "번역 중..."
+                enKoTranslator.translate(recognizedText)
+                    .addOnSuccessListener { translated ->
+                        translatedText = translated
+                    }
+                    .addOnFailureListener { exception ->
+                        translatedText = "번역 실패: ${exception.message}"
+                        scope.launch(Dispatchers.Main) {
+                            Toast.makeText(context, translatedText, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            }
+        }
+
     }
 }
