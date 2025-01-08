@@ -146,7 +146,6 @@ fun MainScreen() {
         ) {
             Text("검색")
         }
-        Text(transText)
     }
 }
 
