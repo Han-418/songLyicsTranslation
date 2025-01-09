@@ -86,7 +86,7 @@ private fun SpeechToTranslationScreen() {
         enKoTranslator.downloadModelIfNeeded(conditions)
             .addOnSuccessListener {
                 isReady = true
-                Toast.makeText(context, "번역 모델 다운로드 완료!", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, "번역 모델 다운로드 완료!", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
                 Toast.makeText(context, "번역 모델 다운로드 실패!", Toast.LENGTH_SHORT).show()
