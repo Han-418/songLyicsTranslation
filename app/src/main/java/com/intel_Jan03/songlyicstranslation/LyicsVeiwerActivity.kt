@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
@@ -62,6 +63,7 @@ private fun SpeechToTranslationScreen() {
     //MainActivity에서 전달받은 lyricsText(=lyicsTrans)
     val lyricsText =
         (context as? Activity)?.intent?.getStringExtra("LYRICS_TEXT") ?: "No text available"
+    Log.d("Lyrics", "Lyrics Text: $lyricsText")
 
     var recognizedText by remember { mutableStateOf("") }
     var translatedText by remember { mutableStateOf("") }
@@ -161,9 +163,27 @@ private fun SpeechToTranslationScreen() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text("원문 가사: $lyricsText", modifier = Modifier.padding(8.dp))
-        Text("인식된 텍스트: $recognizedText", modifier = Modifier.padding(8.dp))
-        Text("번역된 텍스트: $translatedText", modifier = Modifier.padding(8.dp))
+        Text(
+            "원문 가사: \n$lyricsText",
+            modifier = Modifier.padding(8.dp),
+            fontSize = 18.sp,
+            lineHeight = 24.sp,
+            textAlign = TextAlign.Justify,
+        )
+        Text(
+            "인식된 텍스트: \n$recognizedText",
+            modifier = Modifier.padding(8.dp),
+            fontSize = 18.sp,
+            lineHeight = 24.sp,
+            textAlign = TextAlign.Justify,
+        )
+        Text(
+            "번역된 텍스트: \n$translatedText",
+            modifier = Modifier.padding(8.dp),
+            fontSize = 18.sp,
+            lineHeight = 24.sp,
+            textAlign = TextAlign.Justify,
+        )
 
         Button(
             onClick = {

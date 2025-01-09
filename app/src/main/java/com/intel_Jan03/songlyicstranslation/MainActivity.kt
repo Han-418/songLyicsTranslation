@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -53,7 +54,9 @@ fun MainScreen() {
     val scope = rememberCoroutineScope()
 //    LaunchedEffect(Unit) {
 //        scope.launch(Dispatchers.IO) {
-//        db.musicDao().insertMusic(newMusic)
+//        db.musicDao().insertMusic(
+//
+//        )
 //        }
 //    }
 
@@ -80,7 +83,7 @@ fun MainScreen() {
                 scope.launch(Dispatchers.IO) {
                     //음악 정보 조회
                     val musics = db.musicDao().getMusic()
-                    val music = musics.find { it.song == song && it.singer == singer }
+                    val music = musics.find { it.song == song || it.singer == singer }
 
                     //동일 제목의 노래 목록 띄우기
 //                    val music = musics.filter { it.song == song && it.singer == singer }
